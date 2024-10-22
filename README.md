@@ -5,8 +5,9 @@ Repository for scripts used to extract OD flows from Erasmus+ data in a data des
 ## Pre-requisites
 
 ### Data
-1. Local Administrative Units (LAU) for each year between 2014–2022 from [GISCO](https://ec.europa.eu/eurostat/web/gisco/geodata/statistical-units/local-administrative-units).
-2. NUTS regional layers for 2013, 2016, and 2021 from [GISCO](https://ec.europa.eu/eurostat/web/gisco/geodata/statistical-units/territorial-units-statistics).
+1. Erasmus+ official mobility statistics for each year between 2014–2022 from [Erasmus](https://erasmus-plus.ec.europa.eu/resources-and-tools/factsheets-statistics-evaluations/statistics/for-researchers?facets__permanent%7Cfield_eac_topics=1998).
+2. Local Administrative Units (LAU) for each year between 2014–2022 from [GISCO](https://ec.europa.eu/eurostat/web/gisco/geodata/statistical-units/local-administrative-units).
+3. NUTS regional layers for 2013, 2016, and 2021 from [GISCO](https://ec.europa.eu/eurostat/web/gisco/geodata/statistical-units/territorial-units-statistics).
 
 ### Python libraries
 1. `pandas`
