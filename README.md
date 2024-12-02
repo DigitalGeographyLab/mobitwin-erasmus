@@ -15,11 +15,21 @@ Repository for scripts used to extract OD flows from Erasmus+ data in a data des
 3. `geopy`
 4. `shapely`
 
+## Order of running the scripts
+
+| Step | File | Description | Input | Output |
+| ---- | :----- | :---------- | :---- | :----- |
+| 1 | [process_and_combine_erasmus_data.py](process_and_combine_erasmus_data.py) | Reads in the downloaded .xlsx files and combines them | Excel files from Erasmus | A CSV and a pickled dataframe |
+| 2 | [geocode_erasmus.py](geocode_erasmus_2022.py) | Geocodes the place names in Erasmus+ data | Pickled dataframe from step 1 | Geopackage of  point locations representing origins and destinations of Erasmus+ data |
+| 3 | [connect_NUTS_LAU_OD.py](connect_NUTS_LAU_OD.py) | Connect geocoded data to original combined data | Pickle from step 1, geopackage from step 2 | CSV and geopackage of mobilities |
+| 4 | [sample_verification.py](sample_verification.py) | Gets the weighted random sample of 1000 for verification | Geopackage from step 3 | A csv file |
+
+
 ## Citation
 
 ```
 @article{Vaisanen2024,
-  title = {Erasmus+ student mobility flows on LAU and NUTS 3 levels across Europe from 2014 to 2022},
+  title = {Geolocated Erasmus+ student mobility: Flows on LAU and NUTS 3 spatial levels across Europe from 2014 to 2022},
   author = {Väisänen, Tuomas and Malekzadeh, Milad and Inkeröinen, Oula and Järv, Olle},
   year = {2024},
   journal = {Scientific Data},
