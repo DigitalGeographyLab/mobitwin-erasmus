@@ -3,17 +3,42 @@
 """
 Created on Wed Aug 21 15:15:35 2024
 
+# INFO
+
+Run the script by opening a terminal in the directory of the script and typing:
+    python process_and_combine_erasmus_data.py -i /path/to/excels/ -o /path/to/output/ -n combined_erasmus_data
+
 @author: tuomvais
 """
 
+import argparse
 import pandas as pd
 import glob
+
+# initialize argument parser
+ap = argparse.ArgumentParser()
+
+# set up arguments
+ap.add_argument("-i", "--input", required=True,
+                help="Path to directory with the Erasmus+ mobility Excel files.\nNOTE: Make sure the directory does not contain other .xlsx files!")
+
+ap.add_argument("-o", "--output", required=True,
+                help="Path to directory where resulting CSV and pickled dataframe are saved.")
+
+ap.add_argument("-n", "--name", required=True,
+                help="Designate the name of the output files without a file extension.")
+
+# parse arguments
+args = vars(ap.parse_args())
 
 # list of csv files
 files = []
 
+# set up input filepath
+i_fp = args["input"] + "*.xlsx"
+
 # glob all the csvs
-for file in glob.glob("/home/tuomvais/GIS/MOBI-TWIN/Erasmus/data_v2/Erasmus-KA1*.xlsx"):
+for file in glob.glob(i_fp):
     files.append(file)
 
 # empty list for dataframes
@@ -92,13 +117,15 @@ result['year'] = result['Mobility Start Year/Month'].apply(lambda x: int(x.split
 # assign mover type
 result['mov_type'] = result['Mobility Duration'].apply(lambda x: 'Short-term' if x < 330 else 'Long-term')
 
+# set up output filenames
+output = args['output'] + args['name']
+
 # save as csv
 print('[INFO] - Saving result to CSV...')
-result.to_csv("/home/tuomvais/GIS/MOBI-TWIN/Erasmus/data_v2/Erasmus_mobilities_2014-2022_combined.csv",
-              sep=';', encoding='utf-8')
+result.to_csv(output + ".csv", sep=';', encoding='utf-8')
 
 # save as pickle
 print('[INFO] - Saving result to pickle...')
-result.to_pickle("/home/tuomvais/GIS/MOBI-TWIN/Erasmus/data_v2/Erasmus_mobilities_2014-2022_combined.pkl")
+result.to_pickle(output + ".pkl")
 
 print('[INFO] - ... done!')
