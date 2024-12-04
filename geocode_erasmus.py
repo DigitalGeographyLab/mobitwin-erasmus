@@ -406,7 +406,7 @@ unloc_res_u = unloc_res[unloc_res['x'].isna()]
 unloc_res_s = unloc_res[~unloc_res['x'].isna()]
 
 # read in manual corrections
-mancor = pd.read_excel("Unsuccessfuls_geocoded_ALL_DONE.xlsx", converters={'origin':str,
+mancor = pd.read_excel("data/Unsuccessfuls_geocoded_ALL_DONE.xlsx", converters={'origin':str,
                                                                            'count':int,
                                                                            'gc_address':str,
                                                                            'y':float,
