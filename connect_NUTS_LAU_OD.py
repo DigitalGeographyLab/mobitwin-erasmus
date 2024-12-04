@@ -10,9 +10,8 @@ and joins them to the mobility data. The output is the individual-level and
 the aggregate-level mobility data.
 
 Run the script in the terminal by typing:
-    python connect_NUTS_LAU_OD.py
+    python connect_NUTS_LAU_OD.py -i /path/to/file.pkl -p /path/to/points.gpkg -o /path/to/directory/
 
-@author: tuomvais
 """
 
 import pandas as pd

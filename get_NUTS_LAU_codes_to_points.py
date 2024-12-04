@@ -12,7 +12,6 @@ Similar logic is used with NUTS files "NUTS_3_01M_{}_3035.gpkg".
 Run the script in the terminal by typing:
     python get_NUTS_LAU_codes_to_points.py -lp /path/to/lau/ -np /path/to/nuts/ -p /path/to/points.gpkg -o /path/to/output.gpkg
 
-@author: tuomvais
 """
 import pandas as pd
 import geopandas as gpd

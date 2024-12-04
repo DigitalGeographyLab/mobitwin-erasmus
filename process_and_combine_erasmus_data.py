@@ -8,7 +8,6 @@ Created on Wed Aug 21 15:15:35 2024
 Run the script by opening a terminal in the directory of the script and typing:
     python process_and_combine_erasmus_data.py -i /path/to/excels/ -o /path/to/output/ -n combined_erasmus_data
 
-@author: tuomvais
 """
 
 import argparse

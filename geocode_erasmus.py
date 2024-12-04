@@ -8,7 +8,6 @@ Created on Wed Nov 29 11:46:26 2023
 Run the script by opening a terminal in the directory of the script and typing:
     python geocode_erasmus.py -i /path/to/pickle/ -o /path/to/output/
 
-@author: tuomvais
 """
 
 import pandas as pd
