@@ -17,8 +17,6 @@ Run the script in the terminal by typing:
 
 import pandas as pd
 import geopandas as gpd
-from shapely import LineString
-import glob
 import argparse
 
 # initialize argument parser
@@ -26,7 +24,7 @@ ap = argparse.ArgumentParser()
 
 # set up arguments
 ap.add_argument("-i", "--input", required=True,
-                help="Path to the Erasmus+ mobility data with fixed toponyms saved before geocoding.")
+                help="Path to the Erasmus+ mobility data pickle with fixed toponyms saved before geocoding.")
 
 ap.add_argument("-p", "--points", required=True,
                 help="Path to geopackage containing the gecoded toponym points with LAU and NUTS 3 codes.")

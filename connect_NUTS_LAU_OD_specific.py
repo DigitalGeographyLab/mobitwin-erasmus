@@ -3,16 +3,49 @@
 """
 Created on Mon Dec 11 11:29:07 2023
 
-@author: tuomvais
+# INFO
+
+This script takes the geocoding results with LAU and NUTS 3 codes attached
+and joins them to the mobility data using a spatial layer from a specified year.
+The output is the individual-level and the aggregate-level mobility data.
+
+Run the script in the terminal by typing:
+    python connect_NUTS_LAU_OD_specific.py -i /path/to/file.pkl -p /path/to/points.gpkg -t NUTS -y 2021 -l /path/to/nuts.gpkg -o /path/to/directory/
+
 """
 
 import pandas as pd
 import geopandas as gpd
-from shapely import LineString
+import argparse
+
+# initialize argument parser
+ap = argparse.ArgumentParser()
+
+# set up arguments
+ap.add_argument("-i", "--input", required=True,
+                help="Path to the Erasmus+ mobility data pickle with fixed toponyms saved before geocoding.")
+
+ap.add_argument("-p", "--points", required=True,
+                help="Path to geopackage containing the gecoded toponym points with LAU and NUTS 3 codes.")
+
+ap.add_argument("-t", "--type", required=True,
+                help="Type of spatial layer: LAU or NUTS. Write in all caps.")
+
+ap.add_argument("-y", "--year", required=True,
+                help="Year to use for for the spatial layer. Please check LAU and NUTS year versions for reference.")
+
+ap.add_argument("-l", "--layer", required=True,
+                help="Path to spatial layer corresponding to the year to use in aggregation.")
+
+ap.add_argument("-o", "--output", required=True,
+                help="Path to directory where resulting CSVs and pickled dataframes are saved.")
+
+# parse arguments
+args = vars(ap.parse_args())
 
 # reading individual data in
 print('[INFO] - Reading individual data in...')
-data = pd.read_pickle('/home/tuomvais/GIS/MOBI-TWIN/Erasmus/data_v2/erasmus_combined_2014-2022_pre-geocoding.pkl')
+data = pd.read_pickle(args['input'])
 
 # get year
 data['year'] = data['Mobility Start Year/Month'].apply(lambda x: int(x.split('-')[0]))
@@ -34,13 +67,26 @@ data = data[data['d_country'].isin(countrylist)]
 
 # read points
 print('[INFO] - Reading geocoded points in...')
-points = gpd.read_file('/home/tuomvais/GIS/MOBI-TWIN/Erasmus/geocoded_2014-2022_fixed_locations_NUTS_LAU_codes.gpkg')
+points = gpd.read_file(args['points'])
+
+# define the spatial layer column to use
+if args['type'] == 'NUTS':
+    
+    # construct columns to use
+    spatcol = '{}_ID_{}'.format(args['type'], args['year'])
+    idcol = 'NUTS_ID'
+
+elif args['type'] == 'LAU':
+    
+    # construct columns to use
+    spatcol = 'GISCO_{}_ID_{}'.format(args['type'], args['year'])
+    idcol = 'GISCO_ID'
 
 # get NUS 3 codes for 2021
-nutpoints = points[~points['NUTS_ID_2021'].isna()]
+nutpoints = points[~points[spatcol].isna()]
 
-# read NUTS 2021 layer
-nuts = gpd.read_file("/home/tuomvais/GIS/MOBI-TWIN/NUTS/NUTS/NUTS_3_01M_2021_3035.gpkg")
+# read the singular spatial aggregation layer layer
+nuts = gpd.read_file(args['layer'])
 
 # get representative points
 nuts['rep_x'] = nuts['geometry'].representative_point().x
@@ -50,12 +96,12 @@ nuts['rep_y'] = nuts['geometry'].representative_point().y
 nuts['rep_geom'] = gpd.points_from_xy(x=nuts['rep_x'], y=nuts['rep_y'])
 
 # generate a dictionary of locations and point coordinates
-nuts_dict = pd.Series(nuts['rep_geom'].values, nuts['NUTS_ID'].values).to_dict()
-nuts_dict2 = pd.Series(nutpoints['NUTS_ID_2021'].values, nutpoints['origin'].values).to_dict()
+nuts_dict = pd.Series(nuts['rep_geom'].values, nuts[idcol].values).to_dict()
+nuts_dict2 = pd.Series(nutpoints[spatcol].values, nutpoints['origin'].values).to_dict()
 
 # get indicator value for iterations
 n_iter = 1
-print('[INFO] - Assigning NUTS 3 codes to place names...')
+print('[INFO] - Assigning spatial codes to place names...')
 
 # looping over erasmus data
 for i, row in data.iterrows():
@@ -67,23 +113,23 @@ for i, row in data.iterrows():
     # try to save origins
     try:
         # save origins
-        data.at[i, 'orig_nuts'] = nuts_dict2[orig]
+        data.at[i, 'orig_code'] = nuts_dict2[orig]
     except:
         # flood the zone with none
-        data.at[i, 'orig_nuts'] = None
+        data.at[i, 'orig_code'] = None
     
     # try to save destinations
     try:
         # save destinations
-        data.at[i, 'dest_nuts'] = nuts_dict2[dest]
+        data.at[i, 'dest_code'] = nuts_dict2[dest]
     except:
         # flood the zone with none
-        data.at[i, 'dest_nuts'] = None
+        data.at[i, 'dest_code'] = None
     
     # update n_iter
     n_iter += 1
     
-    # every 10 000 iterations print message and reset n_iter
+    # every 100 000 iterations print message and reset n_iter
     if n_iter == 100000:
         
         # current row
@@ -95,77 +141,27 @@ for i, row in data.iterrows():
         # update n_iter
         n_iter = 1
 
-# get indicator value for iterations
-n_iter = 1
-
-# looping over erasmus data
-for i, row in data.iterrows():
-    
-    # get origin and destination
-    orig = row['orig_nuts']
-    dest = row['dest_nuts']
-    
-    # try to save origins
-    try:
-        # save origins
-        data.at[i, 'orig_point'] = nuts_dict[orig]
-    except:
-        # flood the zone with none
-        data.at[i, 'orig_point'] = None
-    
-    # try to save destinations
-    try:
-        # save destinations
-        data.at[i, 'dest_point'] = nuts_dict[dest]
-    except:
-        # flood the zone with none
-        data.at[i, 'dest_point'] = None
-    
-    # update n_iter
-    n_iter += 1
-    
-    # every 10 000 iterations print message and reset n_iter
-    if n_iter == 100000:
-        
-        # current row
-        currow = i + 1
-        
-        # print message
-        print('[INFO] - Assigning point geometries to NUTS 3 codes. Progress {}/{}'.format(str(currow), str(len(data))))
-        
-        # update n_iter
-        n_iter = 1
-
 # get original data size
 osize = len(data)
 
 # drop mobilities that are not between two NUTS regions (e.g. in Asia, Africa, Americas etc.)
 print('[INFO] - Finalizing individual-level ERASMUS mobility data...')
-data = data.dropna(subset=['orig_nuts','dest_nuts']).reset_index(drop=True)
+data = data.dropna(subset=['orig_code','dest_code']).reset_index(drop=True)
 
 # print info on retained data
 share = round((len(data)/osize) * 100, 2)
 print('[INFO] - {} % of all mobilities can be mapped'.format(share))
 
 # generate OD pair ID
-data['OD_ID'] = data['orig_nuts'] + '_' + data['dest_nuts']
-
-# generate linestrings
-print('[INFO] - Converting OD points to line geometries...')
-data['geometry'] = data.apply(lambda x: LineString([x['orig_point'], x['dest_point']]), axis=1)
-
-# instatiate geodataframe with proper CRS
-data = gpd.GeoDataFrame(data=data, geometry='geometry', crs="EPSG:3035")
-
-# drop point geometries
-data = data.drop(columns=['orig_point', 'dest_point'])
+data['OD_ID'] = data['orig_code'] + '_' + data['dest_code']
 
 print('[INFO] - Saving full individual-level ERASMUS+ data...')
-data.to_file('/home/tuomvais/GIS/MOBI-TWIN/Erasmus/data_v2/OD_full_student_mobility_data_2014-2022_NUTS3_v2021.gpkg')
+data.to_csv(args['output'] + 'Erasmus_2014-2022_individual_{}_{}.csv'.format(args['type'], args['year']),
+            sep=';', encoding='utf-8')
 
 # get unique od pairs
 print('[INFO] - Processing aggregate data...')
-odpairs = data[['OD_ID','orig_nuts','dest_nuts','geometry']].drop_duplicates(subset=['OD_ID']).reset_index(drop=True)
+odpairs = data[['OD_ID','orig_code','dest_code']].drop_duplicates(subset=['OD_ID']).reset_index(drop=True)
 
 # aggregate flows by OD ID and year
 grouped = data.groupby(['OD_ID', 'year'])['Actual Participants'].sum().rename('count').reset_index()
@@ -174,12 +170,13 @@ grouped = data.groupby(['OD_ID', 'year'])['Actual Participants'].sum().rename('c
 studagg = pd.merge(grouped, odpairs, on=['OD_ID'])
 
 # for annual grouped data
-studagg = studagg.rename(columns={'orig_nuts':'ORIGIN',
-                                    'dest_nuts':'DESTINATION',
+studagg = studagg.rename(columns={'orig_code':'ORIGIN',
+                                    'dest_code':'DESTINATION',
                                     'count':'COUNT',
                                     'year':'YEAR'})
 studagg = gpd.GeoDataFrame(studagg, crs='EPSG:3035')
 
 # save aggregate mobilities
 print('[INFO] - Saving aggregate data...')
-studagg.to_file('/home/tuomvais/GIS/MOBI-TWIN/Erasmus/data_v2/OD_students_annual_aggregate_total_NUTS3_2014-2022.gpkg')
+studagg.to_file(args['output'] + 'Erasmus_2014-2022_aggregate_{}_{}.csv'.format(args['type'], args['year']),
+                sep=';', encoding='utf-8')
