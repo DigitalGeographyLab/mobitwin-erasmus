@@ -20,9 +20,11 @@ Repository for scripts used to extract OD flows from Erasmus+ data in a data des
 | Step | File | Description | Input | Output |
 | ---- | :----- | :---------- | :---- | :----- |
 | 1 | [process_and_combine_erasmus_data.py](process_and_combine_erasmus_data.py) | Reads in the downloaded .xlsx files and combines them | Excel files from Erasmus | A CSV and a pickled dataframe |
-| 2 | [geocode_erasmus.py](geocode_erasmus_2022.py) | Geocodes the place names in Erasmus+ data | Pickled dataframe from step 1 | Geopackage of  point locations representing origins and destinations of Erasmus+ data |
-| 3 | [connect_NUTS_LAU_OD.py](connect_NUTS_LAU_OD.py) | Connect geocoded data to original combined data | Pickle from step 1, geopackage from step 2 | CSV and geopackage of mobilities |
-| 4 | [sample_verification.py](sample_verification.py) | Gets the weighted random sample of 1000 for verification | Geopackage from step 3 | A csv file |
+| 2 | [geocode_erasmus.py](geocode_erasmus.py) | Geocodes the place names in Erasmus+ data | Pickled dataframe from step 1 | Geopackage of point locations representing origins and destinations of Erasmus+ data |
+| 3 | [get_NUTS_LAU_codes_to_points.py](get_NUTS_LAU_codes_to_points.py) | Joins NUTS and LAU codes to geocoded placenames | Result geopackage from step 2 and the spatial layers | Geopackage of point locations with their associated regional codes on LAU and NUTS 3 levels |
+| 4 | [connect_NUTS_LAU_OD.py](connect_NUTS_LAU_OD.py) | Connect geocoded data to original combined data across all spatial layers | Pickle from step 1, geopackage from step 3 | CSVs of mobilities |
+| 4.5 | [connect_NUTS_LAU_OD_specific.py](connect_NUTS_LAU_OD_specific.py) | Connect geocoded data to original combined data for a specific spatial layer | Pickle from step 1, geopackage from step 3 | CSVs of mobilities |
+| 5 | [sample_verification.py](sample_verification.py) | Gets the weighted random sample of 1000 for verification | Geopackage from step 4 | A csv file |
 
 
 ## Citation
