@@ -186,7 +186,7 @@ for year in range(2014, 2023):
     comblist.append(subset)
     
 # concatenate combined list
-combined = pd.concat(comblist, ignore_index=True)
+combined = pd.concat(comblist, ignore_index=True).sort_values(by=['year']).reset_index(drop=True)
 
 # get original data size
 osize = len(data)
@@ -200,8 +200,8 @@ combined.to_csv(args['output'] + 'Erasmus_2014-2022_individual.csv', index=False
 
 # get unique od pairs
 print('[INFO] - Processing aggregate data on LAU and NUTS 3 levels...')
-odpairs_lau = combined[['OD_ID_LAU','orig_LAU','dest_LAU']].drop_duplicates(subset=['OD_ID']).reset_index(drop=True)
-odpairs_nuts = combined[['OD_ID_NUTS','orig_NUTS','dest_NUTS']].drop_duplicates(subset=['OD_ID']).reset_index(drop=True)
+odpairs_lau = combined[['OD_ID_LAU','orig_LAU','dest_LAU']].drop_duplicates(subset=['OD_ID_LAU']).reset_index(drop=True)
+odpairs_nuts = combined[['OD_ID_NUTS','orig_NUTS','dest_NUTS']].drop_duplicates(subset=['OD_ID_NUTS']).reset_index(drop=True)
 
 # aggregate flows by OD ID and year
 lau_g = combined.groupby(['OD_ID_LAU', 'year'])['Actual Participants'].sum().rename('count').reset_index()
@@ -213,16 +213,22 @@ nutsagg = pd.merge(nuts_g, odpairs_nuts, on=['OD_ID_NUTS'])
 
 # rename columns
 lauagg = lauagg.rename(columns={'OD_ID_LAU':'OD_ID',
-                                'orig_nuts':'ORIGIN',
-                                'dest_nuts':'DESTINATION',
+                                'orig_LAU':'ORIGIN',
+                                'dest_LAU':'DESTINATION',
                                 'count':'COUNT',
                                 'year':'YEAR'})
 nutsagg = nutsagg.rename(columns={'OD_ID_NUTS':'OD_ID',
-                                  'orig_nuts':'ORIGIN',
-                                  'dest_nuts':'DESTINATION',
+                                  'orig_NUTS':'ORIGIN',
+                                  'dest_NUTS':'DESTINATION',
                                   'count':'COUNT',
                                   'year':'YEAR'})
 
+# column order
+colorder = ['OD_ID','ORIGIN','DESTINATION','YEAR','COUNT']
+
+# order columns
+lauagg = lauagg[colorder]
+nutsagg = nutsagg[colorder]
 
 # save aggregate mobilities
 print('[INFO] - Saving aggregate data...')
