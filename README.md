@@ -31,7 +31,7 @@ Repository for scripts used to extract OD flows from Erasmus+ data in a data des
 
 ```
 @article{Vaisanen2024,
-  title = {Geolocated Erasmus+ student mobility: Flows on LAU and NUTS 3 spatial levels across Europe from 2014 to 2022},
+  title = {Geolocated Erasmus+ student mobility in Europe: individual and spatially aggregate mobility flow data from 2014 to 2022},
   author = {Väisänen, Tuomas and Malekzadeh, Milad and Inkeröinen, Oula and Järv, Olle},
   year = {2024},
   journal = {Scientific Data},
