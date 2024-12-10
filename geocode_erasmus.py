@@ -13,7 +13,6 @@ Run the script by opening a terminal in the directory of the script and typing:
 import pandas as pd
 from geopy.geocoders import Photon, Nominatim
 from geopy.extra.rate_limiter import RateLimiter
-import glob
 import geopandas as gpd
 import time
 import random
