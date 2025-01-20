@@ -67,10 +67,10 @@ comblist = []
 for year in range(2014, 2023):
     
     # check if more recent data
-    if year >= 2021:
+    if year >= 2020:
         
         # set LAU 2021 as the one to use
-        lau_col = 'GISCO_LAU_ID_2021'
+        lau_col = 'GISCO_LAU_ID_2020'
         
     # otherwise do this for LAU codes
     else:
