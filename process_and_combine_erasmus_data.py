@@ -19,13 +19,17 @@ ap = argparse.ArgumentParser()
 
 # set up arguments
 ap.add_argument("-i", "--input", required=True,
-                help="Path to directory with the Erasmus+ mobility Excel files.\nNOTE: Make sure the directory does not contain other .xlsx files!")
+                help="Path to directory with the Erasmus+ mobility Excel\n"
+                " files. NOTE: Make sure the directory does not contain "
+                "other .xlsx files!")
 
 ap.add_argument("-o", "--output", required=True,
-                help="Path to directory where resulting CSV and pickled dataframe are saved.")
+                help="Path to directory where resulting CSV and pickled "
+                "dataframe are saved.")
 
 ap.add_argument("-n", "--name", required=True,
-                help="Designate the name of the output files without a file extension.")
+                help="Designate the name of the output files without a "
+                "file extension.")
 
 # parse arguments
 args = vars(ap.parse_args())
@@ -42,70 +46,70 @@ for file in glob.glob(i_fp):
 
 # empty list for dataframes
 edf = []
-    
+
 # loop over the csv files
 for fi in files:
-    
+
     # get filename
     fn = fi.split('/')[-1][:-5]
-    
+
     # get year
     yr = int(fn.split('-')[-1])
-    
+
     # print message
     print('[INFO] - Reading file ' + str(fn))
-    
+
     # check if file is from newer erasmus program
     if yr >= 2021:
-        
+
         # get excel file object
         xls = pd.ExcelFile(fi)
-        
+
         # get sheet names
         sheets = xls.sheet_names
-        
+
         # empty list of mobilities from both programmes
         emprog = []
-        
+
         # loop over sheets
         for sh in sheets:
-            
+
             # read sheet
             data = pd.read_excel(fi, sheet_name=sh)
-            
+
             # append
             emprog.append(data)
-        
+
         # concatenate into one dataframe
         df = pd.concat(emprog, ignore_index=True)
-        
+
         # forget list and data
         del emprog, data, xls
-    
+
     # check if data is from earlier programme
     else:
-        
+
         # read csv in
         df = pd.read_excel(fi)
-    
+
     # drop NA from mobility duration
     df = df.dropna(subset=['Mobility Duration'])
-    
+
     # drop shorter mobility
     df = df[df['Mobility Duration'] >= 90]
-    
+
     # drop records where age isn't reported
     df = df[df['Participant Age'] != '-']
-    
+
     # drop too young participants
     df = df[df['Participant Age'].astype(int) >= 18]
-    
+
     # ensure all participants are students
     df = df[df['Participant Profile'] == 'Learner']
-    
+
     # send to empty list
     edf.append(df)
-    
+
 # final concatenation
 print('[INFO] - Concatenating result...')
 result = pd.concat(edf, ignore_index=True)
