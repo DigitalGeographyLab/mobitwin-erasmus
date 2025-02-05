@@ -29,6 +29,8 @@ Repository for scripts used to extract OD flows from Erasmus+ data in a data des
 
 ## Citation
 
+Please use cite the Scientific Data article when you use the spatially enriched student mobility data or these scripts.
+
 ```
 @article{Vaisanen2024,
   title = {Geolocated Erasmus+ student mobility in Europe: individual and spatially aggregate mobility flow data from 2014 to 2022},
