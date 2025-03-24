@@ -1,6 +1,5 @@
 # Erasmus+ student mobility flows on LAU and NUTS 3 levels across Europe from 2014 to 2022
-Repository for scripts used to extract OD flows from Erasmus+ data in a data description article published in Scientific Data.
-
+Repository for scripts used to extract OD flows from "[Mobility of Erasmus+ students in Europe: Geolocated individual and aggregate mobility flows from 2014 to 2022](https://doi.org/10.1038/s41597-025-04789-0)", a data description article published in Scientific Data.
 
 ## Pre-requisites
 
@@ -33,14 +32,15 @@ Please use cite the Scientific Data article when you use the spatially enriched 
 
 ```
 @article{Vaisanen2024,
-  title = {Geolocated Erasmus+ student mobility in Europe: individual and spatially aggregate mobility flow data from 2014 to 2022},
+  title = {Mobility of Erasmus+ students in Europe: Geolocated individual and aggregate mobility flows from 2014 to 2022},
   author = {Väisänen, Tuomas and Malekzadeh, Milad and Inkeröinen, Oula and Järv, Olle},
-  year = {2024},
+  year = {2025},
   journal = {Scientific Data},
-  volume = {XXX},
-  number = {YYY},
+  volume = {12},
+  number = {1},
   pages = {ZZZZ},
-  doi = {doi.number/doi.number}
+  url = {https://doi.org/10.1038/s41597-025-04789-0},
+  doi = {10.1038/s41597-025-04789-0}
 }
 ```
 
