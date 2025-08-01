@@ -36,7 +36,8 @@ args = vars(ap.parse_args())
 sym_dict = {' - ': ', ',
             ' / ': ', ',
             '/': ', ',
-            ' | ': ', '}
+            ' | ': ', ',
+            '\t':''}
 
 # read pickle in
 df = pd.read_pickle(args["input"])
@@ -49,9 +50,9 @@ probs = []
 # list of placenames to switch for institution names
 problist = ['Google', 'CheckURF', 'Check the PIC in URF For City',
             '?', '??', '-', 'Desconocido', 'desconocido',
-            'DESCONOCIDO', 'XXXXX', 'xxxxx', 'Undefined',
+            'DESCONOCIDO', 'XXXXX', 'xxxxx', 'XXX', 'xxx', 'Undefined',
             'Unknown', 'See Era Id', 'Enschede', 'Nepcity',
-            'Dkzz', 'Otros', 'Oth']
+            'Dkzz', 'Otros', 'Oth', 'Nocity', 'nocity', 'NoCity', 'NOCITY']
 
 # counters for problems
 probsend = []
@@ -118,25 +119,6 @@ df['Receiving City'] = df['Receiving City'].replace(r"^ +| +$", r"", regex=True)
 # Get a geocodable location
 df['origin'] = df['Sending City'] + ', ' + df['o_country']
 df['destination'] = df['Receiving City'] + ', ' + df['d_country']
-
-# replace origins and destinations with the actual address for those origins and destinations that have it
-for i, row in df.iterrows():
-
-    # replace origin with accurate address if it is available
-    if pd.isna(row['sending_org_address']) == False:
-
-        # replace origin
-        df.at[i, 'origin'] = row['sending_org_address']
-    else:
-        pass
-
-    # check if destination has accurate address
-    if pd.isna(row['receiving_org_address']) == False:
-
-        # replace destination
-        df.at[i, 'destination'] = row['receiving_org_address']
-    else:
-        pass
 
 # set up place dictionary
 placedict = dictionaries.placedict
