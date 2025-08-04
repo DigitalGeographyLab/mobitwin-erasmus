@@ -42,19 +42,16 @@ data = pd.read_pickle(args['input'])
 data['year'] = data['Mobility Start Year/Month'].apply(lambda x: int(x.split('-')[0]))
 
 # list of countries to accept
-countrylist = ['France', 'Spain', 'Germany', 'Italy', 'Netherlands',
-               'United Kingdom', 'Turkey', 'Poland', 'Belgium',
-               'Portugal', 'Czech Republic', 'Austria', 'Romania',
-               'Finland', 'Greece', 'Sweden', 'Denmark', 'Hungary',
-               'Ireland', 'Lithuania', 'Slovakia', 'Norway',
-               'Slovenia', 'Bulgaria', 'Croatia', 'Latvia',
-               'Türkiye', 'Ukraine', 'Estonia', 'Cyprus', 'Luxembourg',
-               'Serbia', 'Albania', 'Iceland',
-               'The Republic of North Macedonia', 'Malta',
-               'Kosovo * UN resolution', 'Montenegro',
-               'Bosnia and Herzegovina', 'Liechtenstein',
-               'North Macedonia', 'Kosovo', 'Switzerland', 'Monaco',
-               'Kosovo', 'Andorra', 'Faroe Islands', 'Turkey']
+countrylist = ['Albania', 'Andorra', 'Austria', 'Belgium', 'Bosnia and Herzegovina',
+               'Bulgaria', 'Croatia', 'Cyprus', 'Czechia', 'Czech Republic',
+               'Denmark', 'Estonia', 'Faroe Islands', 'Finland', 'France',
+               'Germany', 'Greece', 'Hungary', 'Iceland', 'Ireland', 'Italy',
+               'Kosovo', 'Kosovo * UN resolution', 'Latvia', 'Liechtenstein',
+               'Lithuania', 'Luxembourg', 'Malta', 'Monaco', 'Montenegro',
+               'Netherlands', 'North Macedonia', 'Norway', 'Poland', 'Portugal',
+               'Romania', 'San Marino', 'Serbia', 'Slovakia', 'Slovenia',
+               'Spain', 'Sweden', 'Switzerland', 'The Republic of North Macedonia',
+               'Turkey', 'Türkiye', 'Ukraine', 'United Kingdom']
 
 # filter countries
 data = data[data['o_country'].isin(countrylist)]
@@ -68,7 +65,7 @@ points = gpd.read_file(args['points'])
 comblist = []
 
 # loop over years
-for year in range(2014, 2023):
+for year in range(2014, 2024):
 
     # check if more recent data
     if year >= 2020:
@@ -242,9 +239,9 @@ nutsagg = nutsagg[colorder]
 
 # save aggregate mobilities
 print('[INFO] - Saving aggregate data...')
-lauagg.to_csv(args['output'] + 'Erasmus_2014-2022_aggregate_LAU.csv',
+lauagg.to_csv(args['output'] + 'Erasmus_2014-2023_aggregate_LAU.csv',
               sep=';', encoding='utf-8', index=False)
-nutsagg.to_csv(args['output'] + 'Erasmus_2014-2022_aggregate_NUTS.csv',
+nutsagg.to_csv(args['output'] + 'Erasmus_2014-2023_aggregate_NUTS.csv',
                sep=';', encoding='utf-8', index=False)
 
 # print message

@@ -53,18 +53,16 @@ data['year'] = data['Mobility Start Year/Month'].apply(
     lambda x: int(x.split('-')[0]))
 
 # list of countries to accept
-countrylist = ['France', 'Spain', 'Germany', 'Italy', 'Netherlands',
-               'United Kingdom', 'Turkey', 'Poland', 'Belgium',
-               'Portugal', 'Czech Republic', 'Austria', 'Romania',
-               'Finland', 'Greece', 'Sweden', 'Denmark', 'Hungary', 'Ireland',
-               'Lithuania', 'Slovakia', 'Norway', 'Slovenia', 'Bulgaria',
-               'Croatia', 'Latvia', 'Türkiye', 'Ukraine', 'Estonia', 'Cyprus',
-               'Luxembourg', 'Serbia', 'Albania', 'Iceland',
-               'The Republic of North Macedonia', 'Malta',
-               'Kosovo * UN resolution', 'Montenegro',
-               'Bosnia and Herzegovina', 'Liechtenstein', 'North Macedonia',
-               'Kosovo', 'Switzerland', 'Monaco', 'Kosovo', 'Andorra',
-               'Faroe Islands', 'Turkey']
+countrylist = ['Albania', 'Andorra', 'Austria', 'Belgium', 'Bosnia and Herzegovina',
+               'Bulgaria', 'Croatia', 'Cyprus', 'Czechia', 'Czech Republic',
+               'Denmark', 'Estonia', 'Faroe Islands', 'Finland', 'France',
+               'Germany', 'Greece', 'Hungary', 'Iceland', 'Ireland', 'Italy',
+               'Kosovo', 'Kosovo * UN resolution', 'Latvia', 'Liechtenstein',
+               'Lithuania', 'Luxembourg', 'Malta', 'Monaco', 'Montenegro',
+               'Netherlands', 'North Macedonia', 'Norway', 'Poland', 'Portugal',
+               'Romania', 'San Marino', 'Serbia', 'Slovakia', 'Slovenia',
+               'Spain', 'Sweden', 'Switzerland', 'The Republic of North Macedonia',
+               'Turkey', 'Türkiye', 'Ukraine', 'United Kingdom']
 
 # filter countries
 data = data[data['o_country'].isin(countrylist)]
@@ -163,7 +161,7 @@ data['OD_ID'] = data['orig_code'] + '_' + data['dest_code']
 
 print('[INFO] - Saving full individual-level ERASMUS+ data...')
 data.to_csv(args['output'] +
-            'Erasmus_2014-2022_individual_{}_{}.csv'.format(args['type'],
+            'Erasmus_2014-2023_individual_{}_{}.csv'.format(args['type'],
                                                             args['year']),
             sep=';', encoding='utf-8')
 
@@ -182,11 +180,10 @@ studagg = studagg.rename(columns={'orig_code': 'ORIGIN',
                                   'dest_code': 'DESTINATION',
                                   'count': 'COUNT',
                                   'year': 'YEAR'})
-studagg = gpd.GeoDataFrame(studagg, crs='EPSG:3035')
 
 # save aggregate mobilities
 print('[INFO] - Saving aggregate data...')
-studagg.to_file(args['output'] +
-                'Erasmus_2014-2022_aggregate_{}_{}.csv'.format(
+studagg.to_csv(args['output'] +
+                'Erasmus_2014-2023_aggregate_{}_{}.csv'.format(
                     args['type'],
                     args['year']), sep=';', encoding='utf-8')
