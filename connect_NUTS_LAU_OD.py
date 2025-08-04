@@ -198,7 +198,7 @@ share = round((len(combined)/osize) * 100, 2)
 print('[INFO] - {} % of all mobilities could be mapped'.format(share))
 
 print('[INFO] - Saving full individual-level ERASMUS+ data...')
-combined.to_csv(args['output'] + 'Erasmus_2014-2022_individual.csv',
+combined.to_csv(args['output'] + 'Erasmus_2014-2023_individual.csv',
                 index=False)
 
 # get unique od pairs
